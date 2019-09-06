@@ -1,20 +1,39 @@
 package fr.dexma.mapbox;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Context;
 import android.os.Bundle;
 
-import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigation;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
-    Context context;
+import com.mapbox.android.core.permissions.PermissionsListener;
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.maps.Style;
+
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+    // variables for adding location layer
+    private MapView mapView;
+    private MapboxMap mapboxMap;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Mapbox.getInstance(this, getString(R.string.access_token));
         setContentView(R.layout.activity_main);
-
-        MapboxNavigation navigation = new MapboxNavigation(context, 
-                "pk.eyJ1Ijoic3RhbjE4NzAiLCJhIjoiY2swNWhhbTNmMnltZDNncTk0amJoZjh2dyJ9.wpGd_qAfBv7rb7IE0RdFSA");
+        mapView = findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
     }
+
+    @Override
+    public void onMapReady(@NonNull final MapboxMap mapboxMap) {
+        this.mapboxMap = mapboxMap;
+        mapboxMap.setStyle(getString(R.string.navigation_guidance_day), new Style.OnStyleLoaded() {
+        });
+
+    }
+
 }
